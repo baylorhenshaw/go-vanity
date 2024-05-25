@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0; url={{ .Github }}" />
+    <meta name="go-import" content="localhost:3000/{{ .Name }} git {{ .Github }}">
+    <title>{{ .Name }} - Go Module</title>
+</head>
+<body>
+    <h1>Module {{ .Name }}</h1>
+    <a href="{{ .Github }}" target="_blank">Github</a>
+</body>
+</html>
