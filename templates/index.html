@@ -43,7 +43,7 @@
         <h3>Modules</h3>
         <ul>
             {{ range .Modules }}
-                <li><p><bold>• {{ .Name }}</bold> <pre onclick="copy('{{ $.Host }}{{ .Name }}')">import "{{ $.Host }}{{ .Name }}"</pre></a></p></li>
+                <li><p><bold>• {{ .Name }}</bold> <pre onclick="copy('{{ $.Host }}/{{ .Name }}')">import "{{ $.Host }}/{{ .Name }}"</pre></a></p></li>
             {{ end }}
         </ul>
     </div>

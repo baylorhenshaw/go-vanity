@@ -1,5 +1,5 @@
 {
-    "host": "go.baylor.dev/",
+    "host": "go.baylor.dev",
     "modules": [
         {
             "name": "pq",
