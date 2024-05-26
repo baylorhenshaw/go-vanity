@@ -34,8 +34,12 @@ func main() {
 
 	http.HandleFunc("/{module}", func(w http.ResponseWriter, r *http.Request) {
 		if _, ok := modules[r.PathValue("module")]; ok {
+			type ModulePageData struct {
+				Module Module
+				Host   string
+			}
 			tmp := template.Must(template.ParseFiles("templates/module.html"))
-			tmp.Execute(w, modules[r.PathValue("module")])
+			tmp.Execute(w, ModulePageData{Module: modules[r.PathValue("module")], Host: config.Host})
 		} else {
 			w.WriteHeader(http.StatusNotFound)
 			tmp := template.Must(template.ParseFiles("templates/404.html"))
@@ -45,13 +49,13 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		type Index struct {
+		type IndexPageData struct {
 			Modules []Module
 			Host    string
 		}
 
 		tmp := template.Must(template.ParseFiles("templates/index.html"))
-		tmp.Execute(w, Index{Modules: config.Modules, Host: config.Host})
+		tmp.Execute(w, IndexPageData{Modules: config.Modules, Host: config.Host})
 	})
 
 	log.Fatal(http.ListenAndServe(":"+port, nil))
