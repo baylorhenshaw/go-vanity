@@ -4,18 +4,6 @@
         {
             "name": "pq",
             "github": "https://github.com/lib/pq"
-        },
-        {
-            "name": "pq1",
-            "github": "https://github.com/lib/pq"
-        },
-        {
-            "name": "pq2",
-            "github": "https://github.com/lib/pq"
-        },
-        {
-            "name": "pq3",
-            "github": "https://github.com/lib/pq"
         }
     ]
 }
