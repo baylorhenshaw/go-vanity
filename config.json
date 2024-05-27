@@ -2,8 +2,8 @@
     "host": "go.baylor.dev",
     "modules": [
         {
-            "name": "pq",
-            "github": "https://github.com/lib/pq"
+            "name": "go-vanity",
+            "github": "https://github.com/baylorhenshaw/go-vanity"
         }
     ]
 }

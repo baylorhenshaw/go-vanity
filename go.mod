@@ -1,4 +1,4 @@
-module github.com/baylorhenshaw/google-deploy-test
+module go.baylor.dev/go-vanity
 
 go 1.22.3
 
