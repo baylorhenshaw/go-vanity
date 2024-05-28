@@ -5,19 +5,15 @@ on:
     branches:
       - main
 
+permissions: write-all
+
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Login to GitHub Container Registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository }}:latest .
-
-      - name: Push Docker image
-        run: docker push ghcr.io/${{ github.repository }}:latest
+        run: |
+          docker login --username baylorhenshaw --password ${{ secrets.GH_PAT }} ghcr.io
+          docker build . -t ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}:latest
