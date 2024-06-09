@@ -119,6 +119,6 @@ func registerModules() (map[string]Module, Config) {
 func loadEnvironment() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Error("Error loading .env file")
 	}
 }
