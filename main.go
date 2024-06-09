@@ -78,7 +78,7 @@ func main() {
 // Register all modules from modules.json
 func registerModules() (map[string]Module, Config) {
 
-	configFile, err := os.ReadFile("config.json")
+	configFile, err := os.ReadFile(os.Getenv("CONFIG_FILE"))
 	if err != nil {
 		fmt.Print(err)
 	}
