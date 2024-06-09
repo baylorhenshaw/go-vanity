@@ -1,9 +1,0 @@
-{
-    "host": "go.baylor.dev",
-    "modules": [
-        {
-            "name": "go-vanity",
-            "github": "https://github.com/baylorhenshaw/go-vanity"
-        }
-    ]
-}
