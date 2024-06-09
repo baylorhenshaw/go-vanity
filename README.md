@@ -1,7 +1,15 @@
+<div align="center">
+    <h1>💫 Go Vanity ✨</h1>
+    <p>A minimal web server for creating vanity Go module URLs.</p>
+    <a href="https://github.com/baylorhenshaw/go-vanity/issues"><img src="https://img.shields.io/github/issues/baylorhenshaw/go-vanity"></a>
+    <a href="https://github.com/baylorhenshaw/go-vanity/"><img src="https://img.shields.io/github/forks/baylorhenshaw/go-vanity"></a>
+    <a href="https://github.com/baylorhenshaw/go-vanity/"><img src="https://img.shields.io/github/stars/baylorhenshaw/go-vanity"></a>
+</div>
+
 > [!TIP]
 > View this project live at [go.baylor.dev](https://go.baylor.dev/)!
 
-# 💫 Go Vanity ✨
+### What is Go Vanity?
 Go Vanity is a simple web server that allows you to host Go modules with your own vanity url. For example, instead of ...
 ```
 go get github.com/baylorhenshaw/go-vanity
@@ -10,6 +18,7 @@ You can use ...
 ```
 go get go.baylor.dev/go-vanity
 ```
+
 # 💾 Installation 💿
 
 > [!WARNING]
