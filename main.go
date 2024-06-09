@@ -8,11 +8,13 @@ import (
 	"os"
 
 	"github.com/charmbracelet/log"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	Host    string   `json:"host"`
-	Modules []Module `json:"modules"`
+	Host      string   `json:"host"`
+	Modules   []Module `json:"modules"`
+	Analytics Analytics
 }
 
 type Module struct {
@@ -20,7 +22,15 @@ type Module struct {
 	Github string `json:"github"`
 }
 
+type Analytics struct {
+	Enabled bool   `json:"enabled"`
+	Url     string `json:"url"`
+	Id      string `json:"id"`
+}
+
 func main() {
+
+	loadEnvironment()
 
 	modules, config := registerModules()
 
@@ -35,15 +45,16 @@ func main() {
 	http.HandleFunc("/{module}", func(w http.ResponseWriter, r *http.Request) {
 		if _, ok := modules[r.PathValue("module")]; ok {
 			type ModulePageData struct {
-				Module Module
-				Host   string
+				Module    Module
+				Host      string
+				Analytics Analytics
 			}
-			tmp := template.Must(template.ParseFiles("templates/module.html"))
-			tmp.Execute(w, ModulePageData{Module: modules[r.PathValue("module")], Host: config.Host})
+			tmp := template.Must(template.ParseFiles("templates/module.tmpl"))
+			tmp.Execute(w, ModulePageData{Module: modules[r.PathValue("module")], Host: config.Host, Analytics: config.Analytics})
 		} else {
 			w.WriteHeader(http.StatusNotFound)
-			tmp := template.Must(template.ParseFiles("templates/404.html"))
-			tmp.Execute(w, nil)
+			tmp := template.Must(template.ParseFiles("templates/404.tmpl"))
+			tmp.Execute(w, config.Analytics)
 		}
 	})
 
@@ -52,12 +63,13 @@ func main() {
 		log.Info("Received Request")
 
 		type IndexPageData struct {
-			Modules []Module
-			Host    string
+			Modules   []Module
+			Host      string
+			Analytics Analytics
 		}
 
-		tmp := template.Must(template.ParseFiles("templates/index.html"))
-		tmp.Execute(w, IndexPageData{Modules: config.Modules, Host: config.Host})
+		tmp := template.Must(template.ParseFiles("templates/index.tmpl"))
+		tmp.Execute(w, IndexPageData{Modules: config.Modules, Host: config.Host, Analytics: config.Analytics})
 	})
 
 	log.Fatal(http.ListenAndServe(":"+port, nil))
@@ -80,5 +92,21 @@ func registerModules() (map[string]Module, Config) {
 		log.Info("Registered module " + config.Modules[i].Name + " from " + config.Modules[i].Github)
 	}
 
+	if os.Getenv("UMAMI_URL") != "" {
+		if os.Getenv("UMAMI_URL") != "" {
+			config.Analytics.Enabled = true
+			config.Analytics.Url = os.Getenv("UMAMI_URL")
+			config.Analytics.Id = os.Getenv("UMAMI_ID")
+			log.Info("Enabled Umami Analytics")
+		}
+	}
+
 	return modules, config
+}
+
+func loadEnvironment() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }
