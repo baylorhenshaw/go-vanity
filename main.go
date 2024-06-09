@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -12,7 +11,7 @@ import (
 )
 
 type Config struct {
-	Host      string   `json:"host"`
+	Host      string
 	Modules   []Module `json:"modules"`
 	Analytics Analytics
 }
@@ -37,10 +36,10 @@ func main() {
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
-		log.Info("Defaulting to port " + port)
+		log.Warn("Could not find PORT in environment variable, defaulting to 3000")
 	}
 
-	log.Info("Server is running on port " + port)
+	log.Info("Server is started on http://" + config.Host + ":" + port + "/")
 
 	http.HandleFunc("/{module}", func(w http.ResponseWriter, r *http.Request) {
 		if _, ok := modules[r.PathValue("module")]; ok {
@@ -51,16 +50,18 @@ func main() {
 			}
 			tmp := template.Must(template.ParseFiles("templates/module.tmpl"))
 			tmp.Execute(w, ModulePageData{Module: modules[r.PathValue("module")], Host: config.Host, Analytics: config.Analytics})
+			log.Info("Redirecting user to " + modules[r.PathValue("module")].Github)
 		} else {
 			w.WriteHeader(http.StatusNotFound)
 			tmp := template.Must(template.ParseFiles("templates/404.tmpl"))
 			tmp.Execute(w, config.Analytics)
+			log.Warn("Module not found for /" + r.PathValue("module"))
 		}
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		log.Info("Received Request")
+		log.Info("Received request for /")
 
 		type IndexPageData struct {
 			Modules   []Module
@@ -78,11 +79,13 @@ func main() {
 // Register all modules from modules.json
 func registerModules() (map[string]Module, Config) {
 
-	configFile, err := os.ReadFile(os.Getenv("CONFIG_FILE"))
+	// Load Modules File
+	configFile, err := os.ReadFile(os.Getenv("MODULES_FILE"))
 	if err != nil {
-		fmt.Print(err)
+		log.Error("Could not load modules file!")
 	}
 
+	// Parse Modules File
 	var config Config
 	_ = json.Unmarshal([]byte(configFile), &config)
 
@@ -92,6 +95,15 @@ func registerModules() (map[string]Module, Config) {
 		log.Info("Registered module " + config.Modules[i].Name + " from " + config.Modules[i].Github)
 	}
 
+	// Set Host
+	if os.Getenv("HOST") != "" {
+		config.Host = os.Getenv("HOST")
+	} else {
+		config.Host = "localhost"
+		log.Warn("Could not find HOST in environment variable, defaulting to localhost")
+	}
+
+	// Enable Umami Analytics
 	if os.Getenv("UMAMI_URL") != "" {
 		if os.Getenv("UMAMI_URL") != "" {
 			config.Analytics.Enabled = true
